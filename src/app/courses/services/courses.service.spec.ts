@@ -4,6 +4,7 @@ import {HttpTestingController , HttpClientTestingModule } from '@angular/common/
 import {CoursesService} from './courses.service'
 
 import { COURSES } from '../../../../server/db-data'
+import { Course } from '../model/course'
 
 describe('CoursesService', () => {
 
@@ -74,6 +75,24 @@ describe('CoursesService', () => {
     // 옵저버블로 받은 데이터는 구독 함수에서 검사합니다.
     req.flush(COURSES[12])
 
+
+  })
+
+  it('should save the course data', () => {
+
+    const changes : Partial<Course> =  {titles: {description: 'Testing Course'}}
+
+    coursesService.saveCourse(12, changes).subscribe(course => {
+
+      expect(course.id).toBe(12)
+
+    })
+
+    const req = httpTestingController.expectOne('/api/courses/12')
+    expect(req.request.method).toEqual("PUT")
+    expect(req.request.body.titles.description).toEqual(changes.titles.description)
+
+    req.flush({...COURSES[12], ...changes})
 
   })
 
