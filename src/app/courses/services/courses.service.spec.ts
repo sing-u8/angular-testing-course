@@ -1,22 +1,25 @@
 
-import { HttpClient } from '@angular/common/http'
 import { TestBed } from '@angular/core/testing'
+import {HttpTestingController , HttpClientTestingModule } from '@angular/common/http/testing'
 import {CoursesService} from './courses.service'
 
 describe('CoursesService', () => {
 
-  let coursesService : CoursesService
+  let coursesService : CoursesService, httpTestingController : HttpTestingController
 
   beforeEach(() => {
 
     TestBed.configureTestingModule({
+      imports: [
+        HttpClientTestingModule
+      ],
       providers: [
         CoursesService,
-
       ]
     })
 
-    // coursesService = TestBed.inject(CoursesService)
+    coursesService = TestBed.inject(CoursesService)
+    httpTestingController = TestBed.inject(HttpTestingController)
   })
 
 
