@@ -1,4 +1,4 @@
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {waitForAsync, ComponentFixture, TestBed} from '@angular/core/testing'; // async is deprecated
 import {CoursesCardListComponent} from './courses-card-list.component';
 import {CoursesModule} from '../courses.module';
 import {COURSES} from '../../../../server/db-data';
@@ -13,17 +13,38 @@ import {setupCourses} from '../common/setup-test-data';
 
 describe('CoursesCardListComponent', () => {
 
+  let component: CoursesCardListComponent
+  let fixture: ComponentFixture<CoursesCardListComponent>
+  let el: DebugElement
+
+  beforeEach(waitForAsync(() => {
+
+    TestBed.configureTestingModule({
+      imports: [
+        CoursesModule
+      ]
+    })
+      .compileComponents()
+      .then(() => {
+        fixture = TestBed.createComponent(CoursesCardListComponent)
+        component = fixture.componentInstance
+        el = fixture.debugElement
+      })
+  }))
 
   it("should create the component", () => {
-
-   pending();
-
+    expect(component).toBeTruthy()
   });
 
 
   it("should display the course list", () => {
 
-    pending();
+    component.courses = setupCourses()
+
+    const cards = el.queryAll(By.css('.course-card'))
+    expect(cards).toBeTruthy("Could not find cards")
+    expect(cards.length).toBe(12, "unexpected number of courses")
+
 
   });
 
