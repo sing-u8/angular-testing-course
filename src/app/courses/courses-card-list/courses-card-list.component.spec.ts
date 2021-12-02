@@ -57,7 +57,7 @@ describe('CoursesCardListComponent', () => {
 
       const course = component.courses[0]
 
-      const card = el.query(By.css(".course-card:first-child"))
+      const card = el.query(By.css(".course-card:first-child"));
       const title = card.query(By.css("mat-card-title"))
       const image = card.query(By.css("img"))
 
