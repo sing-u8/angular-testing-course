@@ -104,7 +104,6 @@ describe("Async Testing Examples", () => {
       let test = false
 
       // console.log('Creating Observable')
-
       const test$ = of(test).pipe(delay(1000))
 
       test$.subscribe(() => {
