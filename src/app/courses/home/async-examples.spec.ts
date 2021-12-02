@@ -1,11 +1,11 @@
-import { fakeAsync, flush, tick } from "@angular/core/testing";
+import { fakeAsync, flush, flushMicrotasks, tick } from "@angular/core/testing";
 
 describe("Async Testing Examples", () => {
   it("Asynchronous test example with Jasmine done()", (done: DoneFn) => {
 
     let test = false;
     setTimeout(()=> {
-      console.log('running assertions')
+      // console.log('running assertions')
       test = true
       expect(test).toBeTruthy()
       done()
@@ -18,7 +18,7 @@ describe("Async Testing Examples", () => {
     let test = false;
 
     setTimeout(()=> {
-      console.log('running assertions')
+      // console.log('running assertions')
       test = true
       expect(test).toBeTruthy()
     }, 1000)
@@ -33,7 +33,7 @@ describe("Async Testing Examples", () => {
     let test = false;
 
     setTimeout(()=> {
-      console.log('running assertions')
+      // console.log('running assertions')
       test = true
       expect(test).toBeTruthy()
     }, 1000)
@@ -43,30 +43,35 @@ describe("Async Testing Examples", () => {
 
   }))
 
-  it('Asynchronous test example - plain Promise', () => {
+  it('Asynchronous test example - plain Promise', fakeAsync(() => {
 
-    let test = false;
+        let test = false;
 
-    console.log('Creating Promise')
+        console.log('Creating Promise')
 
-    setTimeout(() => {
-      console.log('setTimeout() first callback triggered.')
-    })
-    setTimeout(() => {
-      console.log('setTimeout() second callback triggered.')
-    })
+        // setTimeout(() => {
+        //   console.log('setTimeout() first callback triggered.')
+        // })
+        // setTimeout(() => {
+        //   console.log('setTimeout() second callback triggered.')
+        // })
 
-    Promise.resolve().then(() => {
-      console.log('Promise evaluated successfully')
-      return Promise.resolve()
-    }).then(() => {
-      test = true
-    })
-    // promise가 setTImeout 보다 먼저 실행됨
+        Promise.resolve().then(() => {
+          console.log('Promise first then() evaluated successfully')
 
-    console.log('Running test assertions')
+          test = true
 
-    expect(test).toBeTruthy()
+          return Promise.resolve()
+        }).then(() => {
+          console.log('Promise second then() evaluated successfully')
+        })
+        // promise가 setTImeout 보다 먼저 실행됨
+        flushMicrotasks()
 
-  })
+        console.log('Running test assertions')
+
+        expect(test).toBeTruthy()
+
+
+  }))
 })
