@@ -87,7 +87,7 @@ describe('HomeComponent', () => {
   });
 
 
-  it("should display advanced courses when tab clicked", (done: DoneFn) => {
+  it("should display advanced courses when tab clicked 1", (done: DoneFn) => {
 
     coursesService.findAllCourses.and.returnValue(of(setupCourses()))
     fixture.detectChanges()
@@ -108,6 +108,27 @@ describe('HomeComponent', () => {
     }, 500)  //! --> 'expect' was used when there was no current spec, this could be because an asynchronous test timed out  without done:DoneFn
 
   });
+
+  it("should display advanced courses when tab clicked 2", fakeAsync(() => {
+
+    coursesService.findAllCourses.and.returnValue(of(setupCourses()))
+    fixture.detectChanges()
+    const tabs = el.queryAll(By.css(".mat-tab-label"))
+    expect(tabs.length).toBe(2, "Expected to find 2 tabs")
+
+
+    //  HomeComponent should display advanced courses when tab clicked FAILED errror --> tab container component actually perform async operation when switchin tabs
+    el.nativeElement.click() // same to click()
+    // click(tabs[1])
+    fixture.detectChanges()
+
+    flush() // tick(16)// --> browser task, settimeout, setinterval, request animation frame // not flushMicrotasks() !! --> async, promise
+    // .mat-tab-body-active .mat-card-title
+    const cardTitles = el.queryAll(By.css('.mat-tab-body-active .mat-card-title'))
+    expect(cardTitles.length).toBeGreaterThan(0, "could not find card titles")
+    expect(cardTitles[0].nativeElement.textContent).toContain( "Angular Testing Course")
+
+  }));
 
 });
 
