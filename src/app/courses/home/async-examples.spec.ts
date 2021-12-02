@@ -42,4 +42,31 @@ describe("Async Testing Examples", () => {
     expect(test).toBeTruthy()
 
   }))
+
+  it('Asynchronous test example - plain Promise', () => {
+
+    let test = false;
+
+    console.log('Creating Promise')
+
+    setTimeout(() => {
+      console.log('setTimeout() first callback triggered.')
+    })
+    setTimeout(() => {
+      console.log('setTimeout() second callback triggered.')
+    })
+
+    Promise.resolve().then(() => {
+      console.log('Promise evaluated successfully')
+      return Promise.resolve()
+    }).then(() => {
+      test = true
+    })
+    // promise가 setTImeout 보다 먼저 실행됨
+
+    console.log('Running test assertions')
+
+    expect(test).toBeTruthy()
+
+  })
 })
