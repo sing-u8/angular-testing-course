@@ -30,7 +30,11 @@ describe('HomeComponent', () => {
     course => course.category == "ADVANCED"
   )
 
-  beforeEach(waitForAsync(() => {
+  // beforeAll(() => {
+  //   jasmine.DEFAULT_TIMEOUT_INTERVAL = 100000
+  // })
+
+  beforeEach(waitForAsync(() => {  // fakeAsync를 쓰려면 마지막에 flushMicrotasks()를 호출해야함.
 
     const coursesServiceSpy = jasmine.createSpyObj('CoursesService', ['findAllCourses'])
 
@@ -87,7 +91,7 @@ describe('HomeComponent', () => {
   });
 
 
-  it("should display advanced courses when tab clicked 1", (done: DoneFn) => {
+  it("should display advanced courses when tab clicked 1 - DoneFn", (done: DoneFn) => {
 
     coursesService.findAllCourses.and.returnValue(of(setupCourses()))
     fixture.detectChanges()
@@ -109,7 +113,7 @@ describe('HomeComponent', () => {
 
   });
 
-  it("should display advanced courses when tab clicked 2", fakeAsync(() => {
+  it("should display advanced courses when tab clicked 2 - fakeAsync", fakeAsync(() => {
 
     coursesService.findAllCourses.and.returnValue(of(setupCourses()))
     fixture.detectChanges()
@@ -129,6 +133,31 @@ describe('HomeComponent', () => {
     expect(cardTitles[0].nativeElement.textContent).toContain( "Angular Testing Course")
 
   }));
+
+  it("should display advanced courses when tab clicked 3 - waitForAsync", waitForAsync(() => { // waitfForAsync support actual http request
+    jasmine.DEFAULT_TIMEOUT_INTERVAL = 100000  // 기본 timeout_interval 안에서 테스트가 끝나지 않아서 시간을 조정
+
+    coursesService.findAllCourses.and.returnValue(of(setupCourses()))
+    fixture.detectChanges()
+    const tabs = el.queryAll(By.css(".mat-tab-label"))
+    expect(tabs.length).toBe(2, "Expected to find 2 tabs")
+
+    el.nativeElement.click() // same to click()
+    // click(tabs[1])
+
+    fixture.whenStable().then(() => {
+      // console.log("called whenStable")
+      // .mat-tab-body-active .mat-card-title
+      fixture.detectChanges()
+      const cardTitles = el.queryAll(By.css('.mat-tab-body-active .mat-card-title'))
+      expect(cardTitles.length).toBeGreaterThan(0, "could not find card titles")
+      expect(cardTitles[0].nativeElement.textContent).toContain( "Angular Testing Course")
+    })
+
+
+  }));
+
+
 
 });
 
